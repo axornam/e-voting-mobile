@@ -1,28 +1,37 @@
 package com.progress.e_voting.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.progress.e_voting.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class LoginFragment extends Fragment {
+import org.jetbrains.annotations.NotNull;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class LoginFragment extends Fragment implements View.OnClickListener {
+    private Button mLoginButton;
+    private EditText mUsernameField, mPasswordField;
+    private ProgressBar mProgressBar;
+    private TextView mNoAccount;
+
+    private static final String TAG = "LoginFragment";
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -38,7 +47,6 @@ public class LoginFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment LoginFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static LoginFragment newInstance(String param1, String param2) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
@@ -61,6 +69,37 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        // ID input fields and Login Button
+        mLoginButton = view.findViewById(R.id.id_login_button);
+        mUsernameField = view.findViewById(R.id.id_login_username);
+        mPasswordField = view.findViewById(R.id.id_login_password);
+        mNoAccount = view.findViewById(R.id.id_create_account);
+
+        mNoAccount.setOnClickListener(this::onClickNoAccount);
+        mLoginButton.setOnClickListener(this);
+        return view;
+    }
+
+    private void onClickNoAccount(View view) {
+        FragmentManager fm = getParentFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(
+                android.R.anim.slide_in_left,  // enter
+                android.R.anim.fade_out,  // exit
+                android.R.anim.fade_in,   // popEnter
+                android.R.anim.slide_out_right  // popExit
+        );
+        ft.replace(R.id.auth_fragment_container, RegisterFragment.newInstance("Register", "Fragment"));
+        ft.commit();
+    }
+
+    @Override
+    public void onClick(View v) {
+        String username = mUsernameField.getText().toString();
+        String password = mPasswordField.getText().toString();
+
+        Log.d(TAG, String.format("onClick: Username: %s | Password: %s", username, password));
     }
 }

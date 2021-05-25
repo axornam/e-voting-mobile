@@ -2,29 +2,39 @@ package com.progress.e_voting.ui.auth;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.progress.e_voting.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RegisterFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class RegisterFragment extends Fragment {
+import org.jetbrains.annotations.NotNull;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+public class RegisterFragment extends Fragment implements View.OnClickListener {
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    private static final String TAG = "RegisterFragment";
+
     private String mParam1;
     private String mParam2;
+
+    private TextView mAlreadyAccount;
+    private EditText mUsernameField;
+    private EditText mPasswordField;
+    private EditText mDOBField;
+    private Button mRegisterButton;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -61,6 +71,41 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+
+        mAlreadyAccount = view.findViewById(R.id.id_create_account);
+        mUsernameField = view.findViewById(R.id.id_register_username);
+        mPasswordField = view.findViewById(R.id.id_register_password);
+        mDOBField = view.findViewById(R.id.id_register_dob);
+        mRegisterButton = view.findViewById(R.id.id_register_button);
+
+        mRegisterButton.setOnClickListener(this);
+        mAlreadyAccount.setOnClickListener(this::onClickAlreadyAccount);
+
+        return view;
+    }
+
+    private void onClickAlreadyAccount(View view) {
+        FragmentManager fm = getParentFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(
+                android.R.anim.slide_in_left,  // enter
+                android.R.anim.fade_out,  // exit
+                android.R.anim.fade_in,   // popEnter
+                android.R.anim.slide_out_right  // popExit
+
+        );
+        ft.replace(R.id.auth_fragment_container, LoginFragment.newInstance("Login", "Fragment"));
+        ft.commit();
+    }
+
+    @Override
+    public void onClick(View v) {
+        String username = mUsernameField.getText().toString();
+        String password = mPasswordField.getText().toString();
+        String dob = mDOBField.getText().toString();
+
+        Log.d(TAG, String.format("onClick: USERNAME: %s | PASSWORD: %s | DOB: %s", username, password, dob));
+
     }
 }
