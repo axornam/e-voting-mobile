@@ -24,7 +24,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
     private static final String TAG = "RegisterFragment";
 
     private String mParam1;

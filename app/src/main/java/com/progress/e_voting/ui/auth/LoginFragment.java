@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.progress.e_voting.MainActivity;
 import com.progress.e_voting.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button mLoginButton;
     private EditText mUsernameField, mPasswordField;
-    private ProgressBar mProgressBar;
     private TextView mNoAccount;
 
     private static final String TAG = "LoginFragment";
@@ -69,7 +69,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login,
+                container, false);
 
         // ID input fields and Login Button
         mLoginButton = view.findViewById(R.id.id_login_button);
@@ -91,7 +92,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 android.R.anim.fade_in,   // popEnter
                 android.R.anim.slide_out_right  // popExit
         );
-        ft.replace(R.id.auth_fragment_container, RegisterFragment.newInstance("Register", "Fragment"));
+        ft.replace(R.id.auth_fragment_container,
+                RegisterFragment.newInstance("Register", "Fragment"));
         ft.commit();
     }
 
@@ -100,6 +102,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         String username = mUsernameField.getText().toString();
         String password = mPasswordField.getText().toString();
 
-        Log.d(TAG, String.format("onClick: Username: %s | Password: %s", username, password));
+        Log.d(TAG, String.format("onClick: Username: %s | Password: %s",
+                username, password));
+
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra("username", username);
+        intent.putExtra("password", password);
+        startActivity(intent);
+        getActivity().finish();
     }
 }
