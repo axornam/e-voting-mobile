@@ -1,11 +1,14 @@
 package com.progress.e_voting.ui.auth;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.loader.content.AsyncTaskLoader;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.progress.e_voting.R;
-
-import org.jetbrains.annotations.NotNull;
+import com.progress.e_voting.utils.Util;
 
 
 public class RegisterFragment extends Fragment implements View.OnClickListener {
@@ -92,7 +94,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 android.R.anim.fade_out,  // exit
                 android.R.anim.fade_in,   // popEnter
                 android.R.anim.slide_out_right  // popExit
-
         );
         ft.replace(R.id.auth_fragment_container, LoginFragment.newInstance("Login", "Fragment"));
         ft.commit();
@@ -105,6 +106,28 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         String dob = mDOBField.getText().toString();
 
         Log.d(TAG, String.format("onClick: USERNAME: %s | PASSWORD: %s | DOB: %s", username, password, dob));
+        Util.ShowProgress.showProgress(getContext(), "Registration in Progress");
 
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                onClickAlreadyAccount(getView());
+                Util.ShowProgress.dismissProgress();
+                Util.Alert.getInstance().showAlert(getContext(), "Hello, You are successfully Registered", R.layout.alert_dialog);
+            }
+        };
+
+        asyncTask.execute();
     }
 }

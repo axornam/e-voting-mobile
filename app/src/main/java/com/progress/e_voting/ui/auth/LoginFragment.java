@@ -1,6 +1,7 @@
 package com.progress.e_voting.ui.auth;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.progress.e_voting.MainActivity;
 import com.progress.e_voting.R;
+import com.progress.e_voting.utils.Util;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -105,10 +107,35 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, String.format("onClick: Username: %s | Password: %s",
                 username, password));
 
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        intent.putExtra("username", username);
-        intent.putExtra("password", password);
-        startActivity(intent);
-        getActivity().finish();
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                Util.ShowProgress.showProgress(getContext(), "Please Wait while we log you in");
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                Util.ShowProgress.dismissProgress();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("password", password);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        };
+
+        asyncTask.execute();
+
     }
 }
