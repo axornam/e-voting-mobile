@@ -30,7 +30,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView mNoAccount;
 
     private static final String TAG = "LoginFragment";
-
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -41,14 +40,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
+
     public static LoginFragment newInstance(String param1, String param2) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
@@ -107,35 +99,37 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, String.format("onClick: Username: %s | Password: %s",
                 username, password));
 
-        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onPreExecute() {
-                Util.ShowProgress.showProgress(getContext(), "Please Wait while we log you in");
-            }
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-                return null;
-            }
+//        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+//            @Override
+//            protected void onPreExecute() {
+//                Util.ShowProgress.showProgress(getContext(), "Please Wait while we log you in");
+//            }
+//
+//            @Override
+//            protected Void doInBackground(Void... voids) {
+//                try {
+//                    Thread.sleep(5000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Void unused) {
+//                Util.ShowProgress.dismissProgress();
+//                Intent intent = new Intent(getContext(), MainActivity.class);
+//                intent.putExtra("username", username);
+//                intent.putExtra("password", password);
+//                startActivity(intent);
+//                getActivity().finish();
+//            }
+//        };
 
-            @Override
-            protected void onPostExecute(Void unused) {
-                Util.ShowProgress.dismissProgress();
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                intent.putExtra("username", username);
-                intent.putExtra("password", password);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        };
-
-        asyncTask.execute();
+//        asyncTask.execute();
 
     }
 }
