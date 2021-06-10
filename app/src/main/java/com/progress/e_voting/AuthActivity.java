@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class AuthActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
+
+    public void SwitchActivity(Class<MainActivity> activityClass) {
+        Intent intent = new Intent(AuthActivity.this, activityClass);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
