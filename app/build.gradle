@@ -55,4 +55,5 @@ dependencies {
 
     // dependencies
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.aventrix.jnanoid:jnanoid:2.0.0'
 }
