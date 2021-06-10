@@ -4,10 +4,11 @@
     <item
         android:id="@+id/menu_logout"
         android:title="Logout"
+        android:icon="@drawable/ic_baseline_exit"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/menu_results"
-        android:title="Results"
-        app:showAsAction="never" />
+<!--    <item-->
+<!--        android:id="@+id/menu_results"-->
+<!--        android:title="Results"-->
+<!--        app:showAsAction="never" />-->
 </menu>
