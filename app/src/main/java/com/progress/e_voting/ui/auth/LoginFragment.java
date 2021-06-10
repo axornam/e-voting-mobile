@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.progress.e_voting.AuthActivity;
 import com.progress.e_voting.MainActivity;
 import com.progress.e_voting.R;
 import com.progress.e_voting.utils.Util;
@@ -39,7 +40,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public LoginFragment() {
         // Required empty public constructor
     }
-
 
     public static LoginFragment newInstance(String param1, String param2) {
         LoginFragment fragment = new LoginFragment();
@@ -78,17 +78,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onClickNoAccount(View view) {
-        FragmentManager fm = getParentFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(
-                android.R.anim.slide_in_left,  // enter
-                android.R.anim.fade_out,  // exit
-                android.R.anim.fade_in,   // popEnter
-                android.R.anim.slide_out_right  // popExit
-        );
-        ft.replace(R.id.auth_fragment_container,
-                RegisterFragment.newInstance("Register", "Fragment"));
-        ft.commit();
+        AuthActivity.SwitchFragment(getParentFragmentManager(),
+                RegisterFragment.newInstance("Registration", "Fragment"), R.id.auth_fragment_container);
     }
 
     @Override
@@ -98,8 +89,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         Log.d(TAG, String.format("onClick: Username: %s | Password: %s",
                 username, password));
-
-
 
 //        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 //            @Override
@@ -130,6 +119,5 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //        };
 
 //        asyncTask.execute();
-
     }
 }

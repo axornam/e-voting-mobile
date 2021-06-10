@@ -20,17 +20,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.progress.e_voting.AuthActivity;
 import com.progress.e_voting.R;
 import com.progress.e_voting.models.Voter;
 import com.progress.e_voting.utils.Util;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.security.SecureRandom;
 
 
 public class RegisterFragment extends Fragment implements View.OnClickListener {
@@ -96,16 +100,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onClickAlreadyAccount(View view) {
-        FragmentManager fm = getParentFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.setCustomAnimations(
-                android.R.anim.slide_in_left,  // enter
-                android.R.anim.fade_out,  // exit
-                android.R.anim.fade_in,   // popEnter
-                android.R.anim.slide_out_right  // popExit
-        );
-        ft.replace(R.id.auth_fragment_container, LoginFragment.newInstance("Login", "Fragment"));
-        ft.commit();
+        AuthActivity.SwitchFragment(getParentFragmentManager(),
+                LoginFragment.newInstance("Login", "Fragment"), R.id.auth_fragment_container);
     }
 
     @Override
@@ -114,7 +110,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         String password = mPasswordField.getText().toString();
         String dob = mDOBField.getText().toString();
 
-        Log.d(TAG, String.format("onClick: USERNAME: %s | PASSWORD: %s | DOB: %s", email, password, dob));
+        Log.d(TAG, String.format("onClick: EMAIL: %s | PASSWORD: %s | DOB: %s", email, password, dob));
         Util.ShowProgress.showProgress(getContext(), "Registration in Progress");
 
         createAccount(email, password, dob);
@@ -122,7 +118,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 //        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 //            @Override
 //            protected Void doInBackground(Void... voids) {
-//
 //                try {
 //                    Thread.sleep(5000);
 //                } catch (InterruptedException e) {
@@ -138,7 +133,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 //                Util.Alert.getInstance().showAlert(getContext(), "Hello, You are successfully Registered", R.layout.alert_dialog);
 //            }
 //        };
-//
 //        asyncTask.execute();
     }
 
@@ -146,28 +140,39 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mStore = FirebaseFirestore.getInstance();
         mAuth.createUserWithEmailAndPassword(uEmail, uPassword).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-
                 // TODO alert user of success
                 Toast.makeText(getContext(), "Your Registration was Successful", Toast.LENGTH_SHORT).show();
 
                 // TODO add voter to collections
-                addVoterToFirestore(mAuth.getCurrentUser().getUid(), uEmail, uDOB);
+                String uid = NanoIdUtils.randomNanoId(new SecureRandom(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray(), 10);
+                addVoterToFirestore(uid, uEmail, uDOB);
+
+            } else if (task.isCanceled()) {
+                // TODO alert user of failed registration
             }
 
             // TODO clear form
+            mUsernameField.setText("");
+            mPasswordField.setText("");
+            mDOBField.setText("");
 
-            // TODO redirect to login page
         });
     }
 
     private void addVoterToFirestore(String uid, String uEmail, String uDOB) {
-        mStore.collection("/voters").add(new Voter(uid, uEmail, uDOB))
+        mStore.collection("/voters").document(mAuth.getCurrentUser().getUid()).set(new Voter(uid, uEmail, uDOB))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(getContext(), "Voter Added to Firestore Voters Collection", Toast.LENGTH_SHORT).show();
-                    }
+                        // TODO dismiss progress bar
+                        Util.ShowProgress.dismissProgress();
 
-                    if (task.isCanceled()) {
+                        // TODO redirect to login page
+                        AuthActivity.SwitchFragment(getParentFragmentManager(),
+                                LoginFragment.newInstance("Login", "Fragment"), R.id.auth_fragment_container);
+
+                        Toast.makeText(getContext(), "Voter Added to Firestore Voters Collection",
+                                Toast.LENGTH_SHORT).show();
+                    } else if (task.isCanceled()) {
                         Toast.makeText(getContext(), "Voter Could not be added", Toast.LENGTH_SHORT).show();
                     }
                 });
