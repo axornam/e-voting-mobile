@@ -2,6 +2,9 @@ package com.progress.e_voting;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
@@ -11,6 +14,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.auth.CredentialsProvider;
 import com.google.firebase.firestore.auth.FirebaseAuthCredentialsProvider;
+import com.progress.e_voting.ui.auth.LoginFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,18 +29,17 @@ public class AuthActivity extends AppCompatActivity {
         // Get Instance of Firebase auth
         mAuth = FirebaseAuth.getInstance();
 
-//        signInUser(uEmail, uPassword);
     }
 
-    void signInUser(String uEmail, String uPassword) {
-        mAuth.createUserWithEmailAndPassword(uEmail, uPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    // TODO create user inside the firestore collection
-                    // TODO move to the login screen
-                }
-            }
-        });
+    public static void SwitchFragment(FragmentManager fm, Fragment fragment, int resource) {
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(
+                android.R.anim.slide_in_left,  // enter
+                android.R.anim.fade_out,  // exit
+                android.R.anim.fade_in,   // popEnter
+                android.R.anim.slide_out_right  // popExit
+        );
+        ft.replace(resource, fragment);
+        ft.commit();
     }
 }
